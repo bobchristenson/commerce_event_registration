@@ -23,14 +23,14 @@ function commerce_event_registration_default_rules_configuration() {
       ],
       "DO" : [
         { "drupal_message" : { "message" : "Please checkout before adding any other items to your cart.  Event Registrations must be checked out individually and not combined with other items in the same order" } },
-        { "php_eval" : { "code" : "$product_id = $node-\\u003efield_product[\'und\'][0][\'product_id\'];\\r\\n$quantity = [data:quantity-value];\\r\\n$uid = $user-\\u003euid;\\r\\n\\r\\n\\/\\/ Create the new order in checkout; you might also check first to\\r\\n\\/\\/ see if your user already has an order to use instead of a new one.\\r\\n$order = commerce_order_new($uid, \'checkout_checkout\');\\r\\n\\r\\n\\/\\/ Save the order to get its ID.\\r\\ncommerce_order_save($order);\\r\\n\\r\\n\\/\\/ Load whatever product represents the item the customer will be\\r\\n\\/\\/ paying for and create a line item for it.\\r\\n$product = commerce_product_load($product_id);\\r\\n$line_item = commerce_product_line_item_new($product, $quantity, $order-\\u003eorder_id);\\r\\n\\r\\n\\/\\/ Save the line item to get its ID.\\r\\ncommerce_line_item_save($line_item);\\r\\n\\r\\n\\/\\/add the sid to the line item\\r\\n$line_item_wrapper = entity_metadata_wrapper(\'commerce_line_item\', $line_item);\\r\\n$line_item_wrapper-\\u003efield_webform_sid-\\u003eset(\'[data:sid]\');\\r\\n$line_item_wrapper-\\u003efield_webform_nid-\\u003eset(\'[node:nid]\');\\r\\n\\r\\n\\/\\/resave the line item with sid info\\r\\ncommerce_line_item_save($line_item);\\r\\n\\r\\n\\/\\/ Add the line item to the order using fago\'s rockin\' wrapper.\\r\\n$order_wrapper = entity_metadata_wrapper(\'commerce_order\', $order);\\r\\n$order_wrapper-\\u003ecommerce_line_items[] = $line_item;\\r\\n\\r\\n\\/\\/ Save the order again to update its line item reference field.\\r\\ncommerce_order_save($order);\\r\\n\\r\\n\\/\\/ Redirect to the order\'s checkout form. Obviously, if this were a\\r\\n\\/\\/ form submit handler, you\'d just set $form_state[\'redirect\'].\\r\\ndrupal_goto(\'checkout\\/\' . $order-\\u003eorder_id);" } }
+        { "php_eval" : { "code" : "$product_id = $node-\\u003efield_product[\'und\'][0][\'product_id\'];\\r\\n$quantity = [data:commerce_event_quantity-value];\\r\\n$uid = $user-\\u003euid;\\r\\n\\r\\n\\/\\/ Create the new order in checkout; you might also check first to\\r\\n\\/\\/ see if your user already has an order to use instead of a new one.\\r\\n$order = commerce_order_new($uid, \'checkout_checkout\');\\r\\n\\r\\n\\/\\/ Save the order to get its ID.\\r\\ncommerce_order_save($order);\\r\\n\\r\\n\\/\\/ Load whatever product represents the item the customer will be\\r\\n\\/\\/ paying for and create a line item for it.\\r\\n$product = commerce_product_load($product_id);\\r\\n$line_item = commerce_product_line_item_new($product, $quantity, $order-\\u003eorder_id);\\r\\n\\r\\n\\/\\/ Save the line item to get its ID.\\r\\ncommerce_line_item_save($line_item);\\r\\n\\r\\n\\/\\/add the sid to the line item\\r\\n$line_item_wrapper = entity_metadata_wrapper(\'commerce_line_item\', $line_item);\\r\\n$line_item_wrapper-\\u003efield_webform_sid-\\u003eset(\'[data:sid]\');\\r\\n\\r\\n\\/\\/resave the line item with sid info\\r\\ncommerce_line_item_save($line_item);\\r\\n\\r\\n\\/\\/ Add the line item to the order using fago\'s rockin\' wrapper.\\r\\n$order_wrapper = entity_metadata_wrapper(\'commerce_order\', $order);\\r\\n$order_wrapper-\\u003ecommerce_line_items[] = $line_item;\\r\\n\\r\\n\\/\\/ Save the order again to update its line item reference field.\\r\\ncommerce_order_save($order);\\r\\n\\r\\n\\/\\/ Redirect to the order\'s checkout form. Obviously, if this were a\\r\\n\\/\\/ form submit handler, you\'d just set $form_state[\'redirect\'].\\r\\ndrupal_goto(\'checkout\\/\' . $order-\\u003eorder_id);" } }
       ]
     }
   }');
   $items['rules_auto_create_product_display_node'] = entity_import('rules_config', '{ "rules_auto_create_product_display_node" : {
       "LABEL" : "Auto Create Product Display Node",
       "PLUGIN" : "reaction rule",
-      "REQUIRES" : [ "rules", "entity" ],
+      "REQUIRES" : [ "rules", "php", "entity" ],
       "ON" : [ "commerce_product_insert" ],
       "IF" : [
         { "data_is" : { "data" : [ "commerce-product:type" ], "value" : "paid_event" } }
@@ -43,15 +43,18 @@ function commerce_event_registration_default_rules_configuration() {
               "param_title" : "[commerce-product:title]",
               "param_author" : [ "commerce-product:creator" ]
             },
-            "PROVIDE" : { "entity_created" : { "event_reg_display" : "Event Registration Display" } }
+            "PROVIDE" : { "entity_created" : { "event_reg_display_node" : "Event Registration Display Node" } }
           }
         },
         { "data_set" : {
-            "data" : [ "event-reg-display:field-product:0" ],
+            "data" : [ "event-reg-display-node:field-product:0" ],
             "value" : [ "commerce-product" ]
           }
         },
-        { "redirect" : { "url" : "[event-reg-display:edit-url]" } }
+        { "entity_save" : { "data" : [ "event-reg-display-node" ], "immediate" : 1 } },
+        { "php_eval" : { "code" : "$node = $event_reg_display_node;   \\r\\n$node-\\u003ewebform[\'components\'][1] = array(\\r\\n                \'nid\' =\\u003e $node-\\u003enid,\\r\\n                \'cid\' =\\u003e 1,\\r\\n                \'pid\' =\\u003e 0,\\r\\n                \'weight\' =\\u003e 0,\\r\\n                \'form_key\' =\\u003e \'commerce_event_quantity\',\\r\\n                \'name\' =\\u003e \'Quantity\',\\r\\n                \'type\' =\\u003e \'textfield\',\\r\\n                \'value\' =\\u003e 1,\\r\\n                \'mandatory\' =\\u003e 1,\\r\\n              );\\r\\n    \\r\\n    $node-\\u003ewebform[\'components\'][2] = array(\\r\\n              \'nid\' =\\u003e $node-\\u003enid,\\r\\n              \'cid\' =\\u003e 2,\\r\\n              \'pid\' =\\u003e 0,\\r\\n             \'weight\' =\\u003e 0,\\r\\n              \'form_key\' =\\u003e \'commerce_event_payment_status\',\\r\\n              \'name\' =\\u003e \'Payment Status\',\\r\\n              \'type\' =\\u003e \'select\',\\r\\n              \'value\' =\\u003e \'0\',    \\r\\n              \'extra\' =\\u003e array(\\r\\n                \'items\' =\\u003e  \'1|Paid\' . \\"\\\\n\\" .\\r\\n                                  \'0|Unpaid\',\\r\\n                \'multiple\' =\\u003e 0,\\r\\n                \'private\' =\\u003e 1,\\r\\n              ),  \\/\\/extra\\r\\n              \'mandatory\' =\\u003e 1,\\r\\n      );" } },
+        { "entity_save" : { "data" : [ "event-reg-display-node" ], "immediate" : 1 } },
+        { "redirect" : { "url" : "[event-reg-display-node:edit-url]", "force" : 0 } }
       ]
     }
   }');

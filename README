@@ -1,0 +1,41 @@
+Created by Mustardseed Media Inc
+http://mustardseedmedia.com
+
+NOTE:  This feature is structured horribly. All the rules are in PHP input fields
+and should instead be created as 'real' rules actions instead.  Someday I'll do that.
+
+A simple Drupal 7 Feature which does the following:
+
+1.  Creates a product type:  "Paid Event"
+2.  Creates a product display type:  "Paid Event"
+3.  Designates "Paid Event" nodes as webform types
+
+Then has rules which do the following:
+
+1.  When a product is created it:
+a) creates a paid event product display node
+b) populates the product on this new node with the product reference
+c) autocreates a webform on this node with quantity and paid status fields
+d) redirects to the display node to add additional details
+
+2.  When the webform on this paid event display node is submitted it:
+a) takes the webform quantity field and use it as the quantity desired to purchase
+b) adds an order for the associated product (and the quantity)
+c) saves the webform "sid" in the line item's "sid" field for later reference
+c) redirects the user directly to checkout for these items only (it bypasses and ignores whats in the cart)
+
+3.  After checkout is completed it:
+a) retrieves the webform submission id (sid) from the line item
+b) changes the 'paid status' field from unpaid to paid
+
+
+
+SETUP:
+Some things couldn't be featurized.  They should be setup manually after enabling the feature:
+
+1.  Go into your line items and 'manage display' for the product line item: admin/commerce/config/line-items/product/display
+2.  Drag the "webform sid" field to hidden and save it (this ensures the sid never shows)
+3.  Go to your Paid Event content type and 'manage display': admin/structure/types/manage/paid-event/display
+4.  Drag the "Product" field to hidden and save it (this hides the 'add to cart' button because we're using the webform submission button instead)
+5.  Be glad you didn't have to figure all this out yourself :)
+6.  Say thanks via a paypal chipin: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=EL7W9FY45H66S&lc=US
