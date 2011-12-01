@@ -1,8 +1,7 @@
 Created by Mustardseed Media Inc
 http://mustardseedmedia.com
 
-NOTE:  This feature is structured horribly. All the rules are in PHP input fields
-and should instead be created as 'real' rules actions instead.  Someday I'll do that.
+View a tutorial of this feature at: http://mustardseedmedia.com/podcast/episode51
 
 A simple Drupal 7 Feature which does the following:
 
@@ -33,10 +32,10 @@ b) changes the 'paid status' field from unpaid to paid
 SETUP:
 Some things couldn't be featurized.  They should be setup manually after enabling the feature:
 
-1.  Go into your line items and 'manage display' for the product line item: admin/commerce/config/line-items/product/display
-2.  Drag the "webform sid" field to hidden and save it (this ensures the sid never shows)
-3.  Go to your Paid Event content type and 'manage display': admin/structure/types/manage/paid-event/display
-4.  Drag the "Product" field to hidden and save it (this hides the 'add to cart' button because we're using the webform submission button instead)
-5.  Edit your webform every time you create a new one and select "form validation" (provided by webform validation module).  Choose "numeric" and set it to validate the quantity field.
-6.  Be glad you didn't have to figure all this out yourself :)
-7.  Say thanks via a paypal chipin: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=EL7W9FY45H66S&lc=US
+1.  Edit your webform every time you create a new one and select "form validation" (provided by webform validation module).  Choose "numeric" and set it to validate the quantity field.
+2.  Be glad you didn't have to figure all this out yourself :)
+3.  Say thanks via a paypal chipin: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=EL7W9FY45H66S&lc=US
+
+
+NOTE:  This feature is structured horribly. All the rules are in PHP input fields
+and should instead be created as 'real' rules actions instead.  Someday I'll do that.
