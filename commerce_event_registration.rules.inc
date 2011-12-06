@@ -159,8 +159,7 @@ module_load_include('inc', 'webform', 'includes/webform.submissions');
       $node = node_load($nid);
       $submission = webform_get_submission($nid, $sid);
       //change field to paid status
-      dsm($submission);
-      $submission->data[2]['value'] = '1';
+      $submission->data[2]['value'][0] = '1';
       webform_submission_update($node, $submission);
     };
   }
