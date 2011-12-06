@@ -90,6 +90,7 @@ function commerce_event_registration_order_create_action($order, $node, $data, $
   //add the sid to the line item
   $line_item_wrapper = entity_metadata_wrapper('commerce_line_item', $line_item);
   $line_item_wrapper->field_webform_sid->set($data['sid']);
+  $line_item_wrapper->field_webform_nid->set($node->nid);
 
   //resave the line item with sid info
   commerce_line_item_save($line_item);
@@ -146,16 +147,21 @@ $node->webform['components'][1] = array(
  * Rules action: mark event registration paid 
  */
 function commerce_event_registration_mark_paid($order) {
-dsm($order);
+module_load_include('inc', 'webform', 'includes/webform.submissions');
   $loaded_order = commerce_order_load($order->order_number);
   $order_wrapper = entity_metadata_wrapper('commerce_order', $loaded_order); 
   $line_items = $order_wrapper->commerce_line_items->value();
   foreach($line_items as $line_item) { 
     $line_item_wrapper = entity_metadata_wrapper('commerce_line_item', $line_item); 
     $sid = $line_item_wrapper->field_webform_sid->value();
+    $nid = $line_item_wrapper->field_webform_nid->value();
     if($sid > 0) {
-      $value = db_query("UPDATE {webform_submitted_data} SET data = :data WHERE cid = :cid AND sid = :sid", array(':data' => 1, ':cid' => 2, ':sid' => $sid));
-      return $value;
+      $node = node_load($nid);
+      $submission = webform_get_submission($nid, $sid);
+      //change field to paid status
+      dsm($submission);
+      $submission->data[2]['value'] = '1';
+      webform_submission_update($node, $submission);
     };
   }
 }
