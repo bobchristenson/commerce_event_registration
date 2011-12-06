@@ -10,6 +10,58 @@
 function commerce_event_registration_field_default_fields() {
   $fields = array();
 
+  // Exported field: 'commerce_line_item-product-field_webform_nid'
+  $fields['commerce_line_item-product-field_webform_nid'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_webform_nid',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'module' => 'number',
+      'settings' => array(),
+      'translatable' => '0',
+      'type' => 'number_integer',
+    ),
+    'field_instance' => array(
+      'bundle' => 'product',
+      'commerce_cart_settings' => array(
+        'field_access' => 0,
+      ),
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'Collecting the NID for a commerce event registration submission',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '6',
+        ),
+      ),
+      'entity_type' => 'commerce_line_item',
+      'field_name' => 'field_webform_nid',
+      'label' => 'Webform NID',
+      'required' => 0,
+      'settings' => array(
+        'max' => '',
+        'min' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'number',
+        'settings' => array(),
+        'type' => 'number',
+        'weight' => '3',
+      ),
+    ),
+  );
+
   // Exported field: 'commerce_line_item-product-field_webform_sid'
   $fields['commerce_line_item-product-field_webform_sid'] = array(
     'field_config' => array(
@@ -38,7 +90,7 @@ function commerce_event_registration_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '6',
+          'weight' => '7',
         ),
       ),
       'entity_type' => 'commerce_line_item',
@@ -336,9 +388,11 @@ function commerce_event_registration_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Body');
+  t('Collecting the NID for a commerce event registration submission');
   t('Price');
   t('Product');
   t('This field stores the webform submission id for any products created using the commerce event registration feature.');
+  t('Webform NID');
   t('Webform SID');
 
   return $fields;
