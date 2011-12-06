@@ -35,7 +35,3 @@ Some things couldn't be featurized.  They should be setup manually after enablin
 1.  Edit your webform every time you create a new one and select "form validation" (provided by webform validation module).  Choose "numeric" and set it to validate the quantity field.
 2.  Be glad you didn't have to figure all this out yourself :)
 3.  Say thanks via a paypal chipin: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=EL7W9FY45H66S&lc=US
-
-
-NOTE:  This feature is structured horribly. All the rules are in PHP input fields
-and should instead be created as 'real' rules actions instead.  Someday I'll do that.
